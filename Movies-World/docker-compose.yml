@@ -1,0 +1,24 @@
+version: "3"
+services:
+  backend:
+    container_name: api 
+    build: 
+      context: ./api
+    volumes:
+      - ./api:/usr/app
+      - /usr/app/node_modules
+    environment:  
+      - API_PORT=3000
+    ports: ['3000:3000'] 
+  frontend:
+    container_name: movies-app
+    build:
+      context: ./movies-app
+    volumes:
+      - ./movies-app:/app
+      - /app/node_modules
+    ports:
+      - '8080:8080'
+    environment:  
+      - API_URL=http://localhost
+      - API_PORT=3000

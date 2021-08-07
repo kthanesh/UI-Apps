@@ -4,15 +4,14 @@ const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId;
 const mongodburi = 'mongodb+srv://moviesuser:TestUserM0vies@cluster0.az7tu.mongodb.net/Movies?retryWrites=true&w=majority';
-
+const config = require('./config');
+const PORT = config.API_PORT;
 const app = express();
 
 MongoClient.connect(mongodburi, {useUnifiedTopology: true}).then(client => {
     console.log('Connected to Database');
 
     const moviesDB = client.db('sample_mflix');
-    const moviesList = moviesDB.collection('movies');
-
     app.use(bodyParser.json());
     app.use(express.static(path.join(__dirname, '../movies-app/dist')));
 
@@ -21,7 +20,6 @@ MongoClient.connect(mongodburi, {useUnifiedTopology: true}).then(client => {
             console.log('getting movies');
             moviesDB.collection('movies').find().sort({title: 1}).limit(100).toArray()
                 .then(movies => {
-                    //console.log(movies);
                     res.json(movies);
                 });
         });
@@ -74,8 +72,8 @@ MongoClient.connect(mongodburi, {useUnifiedTopology: true}).then(client => {
             res.sendFile(path.join(__dirname, '../movies-app/build/index.html'));
         });
     
-        app.listen(3000, () => {
-            console.log('listening on 3000');
+        app.listen(PORT, () => {
+            console.log(`listening on ${PORT}`);
         });
     //});
     
